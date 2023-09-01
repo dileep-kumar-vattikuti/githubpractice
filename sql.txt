@@ -1,0 +1,180 @@
+show database ------> SHOW DATABASES;
+create database ---> create database students;
+select database----> use students; , select database();
+delete database---> drop database students;
+create table----> create table student_info(id int,name varchar(20),addr varchar(20),ph int,email varchar(20));
+show tables ----> SHOW TABLES;
+drop table -----> drop table student_info;
+describe table structure---> desc student_info;
+inserting a new row in the table--->insert into student_info values();
+retrive all the data from the table---> select * from student_info;
+something have to add or change  in the column name fields use alter command
+for adding new column field ---> alter table student_info add house_no; 
+for changing the existing column field ---> alter table modify id int not null;
+only unique records have to accept--> alter table modify id int unique;
+delete all records or rows from the table---> truncate table student_info;
+change any data in the record use update---> update student_info set ph='1234' where id='1';
+delete only specific record from the table-->delete from student_info where id='3';
+
+select * from cutomers where state = 'IL' OR state = 'TX';
+or we can use
+select * from cutomers where state in('IL','TX');
+
+
+select * from cutomers where state = 'IL' and pints > 2000;
+select * from customers order by points DESC;
+select * from customers order by points ASC;
+select * from customers where points between 1000 and 2000;
+select * from customers where points = (select MAX(points) from customers);
+
+2nd highest
+select * from customers order by points limit 1 offset 1;
+
+select concat(first_name," ",last_name) as "full_name" from customers;
+
+select distinct state from customers;
+
+select count(distinct state) from customers;
+
+select * from students where sname = "Student 74819";
+/*0.258 sec/0.0000079 sec*/
+create index idx_sname on students(sname); idx_sname -> index name on which table students(sname->column name)
+select * from students where sname = "Student 74819";
+/*0.00053 sec/0.0000081 sec*/
+
+explain select * from student where sname = "Student 74819"
+
+primary key --> not accept null value and have only unique value
+example--> In a class n no of student present but in a class student names may be same we have to assign primary key 
+to the unique field here student id is unique for that column give primarykey 
+At that time of creating primary key for specific column automatically index is created for it
+foreign key will have more than one in a table 
+
+Table Student                 insert into student values(1,"dileep");
+student_id int primary key    insert into student values(2,"sanghavi");
+student_name varchar(10) 
+
+Table course                   insert into course values(1,"QA");
+Course_id int primary key      insert into course values(2,"dev");
+Cource name varchar(10)        insert into course values(3,"devops");
+
+Table enroll                   we have to enroll dileep to dev and sanghavi to QA
+enroll_id int primary key      insert into enroll values(1,null,1,2);
+enroll_fee int                 insert into enroll values(2,null,2,1);
+Student_student_id primary key
+Course_course_id primary key
+
+** suppose we want to delete dev course from course table 
+we get error because course and student tables are parent tables to enroll->child table
+we can't delete dev course from course table until you have to delete who is taken dev course in enroll table 
+it means delete 1st enroll_id 
+
+
+//enroll_fee,enroll_id,student id,course id
+select enroll_id,enroll_fee,student_id,course_id from enroll
+join student
+on enroll.Student_student_id = student.student_id
+join course
+on enroll.Course_course_id = course.course_id;
+
+OR
+
+select e.enroll_id,e.enroll_fee,s.student_id,c.course_id from enroll e
+inner join student s
+on e.Student_student_id = s.student_id
+inner join course c
+on e.Course_course_id = c.course_id;
+
+//left join -->retrive all the records from the left table and along with matched records from the right table
+select e.enroll_id,e.enroll_fee,c.course_id from enroll_details e
+left join course c
+on e.Course_course_id = c.course_id;
+
+//right join--->retrive all the records from the right table and along with matched records from the left table
+select e.enroll_id,e.enroll_fee,c.course_id from enroll_details e
+right join course c
+on e.Course_course_id = c.course_id;
+
+//full join-->retrive all the records from the both the tables
+
+group by
+
+select year(posts.created_at) as year,count(*) as posts
+from posts group by year(posts.created_at) having posts > 2500;
+
++------+-------+
+| year | posts |
++------+-------+
+| 2014 |  2557 |
+| 2017 |  2521 |
++------+-------+
+
+Union ---> combine both table rows in one resultset
+
+select posts.post_id from posts where posts.user_id = "user_10"
+    -> union
+    -> select comments.post_id from comments where comments.user_id = "user_10";
+
+Intersect ---> only common rows from both the resultset 
+
+INTERSECT operator will ensure that only the rows that are present in both result sets are selected, and 
+the MINUS operator will ensure that only the rows that are in the first result set and not in second are selected. 
+Unfortunately, MySQL doesn’t support these operators  
+
+
+
+SELECT posts.post_id, posts.post_text, posts.created_at
+
+FROM posts
+
+WHERE post_id = (SELECT comments.post_id
+
+            FROM comments
+
+            GROUP BY comments.post_id
+
+            ORDER BY COUNT(*) DESC
+
+            LIMIT 1)
+
+View ---> it is virtual table and it is more secure we create a table only with few data from the existing table 
+CREATE VIEW view_name AS
+
+SELECT column1, column2, ...
+
+FROM table_name
+
+WHERE condition;
+
+
+CREATE VIEW users_posts_view AS
+
+SELECT users.user_id, users.name, posts.post_id, posts.created_at
+
+FROM users JOIN posts
+
+ON users.user_id = posts.user_id;
+
+
+
+SELECT DISTINCT users_posts_view.user_id, users_posts_view.name
+
+FROM users_posts_view
+
+WHERE users_posts_view.created_at > DATE_SUB(NOW(), INTERVAL 1 MONTH);
+
+
+
+
+SELECT posts.post_id, posts.post_text
+
+FROM posts
+
+WHERE posts.post_text LIKE "%gym%"
+
+AND NOT posts.post_text LIKE "%food%";
+
+
+
+
+ 
