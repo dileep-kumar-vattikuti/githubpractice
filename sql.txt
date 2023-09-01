@@ -77,7 +77,7 @@ on enroll.Student_student_id = student.student_id
 join course
 on enroll.Course_course_id = course.course_id;
 
-OR
+OR.
 
 select e.enroll_id,e.enroll_fee,s.student_id,c.course_id from enroll e
 inner join student s
